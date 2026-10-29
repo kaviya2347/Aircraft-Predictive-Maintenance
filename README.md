@@ -33,7 +33,7 @@ What the deep model adds is **usable uncertainty** (selected model, 50 MC Dropou
 - **Risk categories** (Low / Moderate / High / Critical): 94.6% exact and 100% within one category.
 - **Fast enough to deploy.** About 3.7 ms per window for 50 MC passes (compiled, 2 CPU cores), or about 218 windows a second in bulk.
 
-### Honest limitations
+### Limitations
 
 - **Intervals are too narrow.** The nominal 95% intervals cover only 70.6% of true values, so treat the std as a ranking signal, not a calibrated interval.
 - **Uncertainty misses dataset shift.** On FD003 (a second fault mode the model never saw), RUL RMSE rises to 23.8 cycles but mean uncertainty actually *falls* (0.022 vs 0.038). MC Dropout alone does not flag this kind of shift, so a production system would need a separate out-of-distribution check.
@@ -84,7 +84,7 @@ new results, so it always shows the latest run. To rebuild it alone: `python src
 
 The analysis is seeded, so the same weights give the same uncertainty numbers on every run.
 
-## Key design choices
+## Key Design Choices
 - Targets: `fault = RUL <= 30`; `risk = 1 - min(RUL,125)/125` (degradation index, not a probability).
 - Split by engine (70 train / 15 val / 15 held-out run-to-failure); scaler fit on train engines only.
 - Decision threshold and model seed are chosen on validation engines, never on test.
